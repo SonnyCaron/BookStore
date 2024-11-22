@@ -26,10 +26,10 @@ Choisir un nom de branche pour représenter les changements
 
 Cliquer sur create
 
-Dans entrer un message &lt;obligatoire&gt;, mettre un message au choix (ce message ne sera visible par personne), puis cliquer sur Valider tout
+Dans entrer un message &lt;obligatoire&gt;, mettre un message représentant les changements, puis cliquer sur Valider tout
 
 Revenir dans l’invite de commande, puis écrire : gh pr create
 
-Suivre les instructions (title est le message que l’on verra)
+Suivre les instructions (title est le message que l’on verra et le message écrit préalablement y apparait)
 
 Vous pouvez vérifier dans l’onglet pull request du github dans votre navigateur web que votre pull request y est
