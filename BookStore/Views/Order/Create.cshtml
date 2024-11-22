@@ -1,0 +1,90 @@
+﻿@model BookStore.Models.Order
+
+@{
+    ViewBag.Title = "Créer une Commande";
+}
+
+<h2>Créer une Commande</h2>
+
+<!-- Afficher les erreurs de validation -->
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        <ul>
+            @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+            {
+                <li>@error.ErrorMessage</li>
+            }
+        </ul>
+    </div>
+}
+
+<form asp-action="Create" method="post">
+    <!-- Sélection de l'utilisateur -->
+    <div>
+        <label for="UserId">Utilisateur :</label>
+        <select asp-for="UserId" asp-items="@(new SelectList(ViewBag.Users, "UserId", "UserName"))" class="form-control">
+            <option value="">Sélectionnez un utilisateur</option>
+        </select>
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
+
+    <!-- Produits et Quantités -->
+    <h3>Produits</h3>
+    <div id="products">
+        @foreach (var product in ViewBag.Products)
+        {
+            <div class="form-group">
+                <input type="checkbox" name="productIds" value="@product.ProductId" />
+                <label>@product.Name - @product.Price € (Stock disponible : @product.StockQuantity)</label>
+                <input type="number" name="quantities" min="1" placeholder="Quantité" class="form-control" />
+            </div>
+        }
+    </div>
+
+    <!-- Date de commande -->
+    <div class="form-group">
+        <label for="OrderDate">Date de commande :</label>
+        <input asp-for="OrderDate" type="date" class="form-control" value="@DateTime.Now.ToString("yyyy-MM-dd")" readonly />
+        <span asp-validation-for="OrderDate" class="text-danger"></span>
+    </div>
+
+    <!-- Bouton de soumission -->
+    <div>
+        <button type="submit" class="btn btn-primary">Créer la Commande</button>
+    </div>
+</form>
+
+<!-- Scripts pour la validation côté client -->
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $("form").on("submit", function (event) {
+                let isValid = true;
+
+                // Vérifier qu'au moins un produit est sélectionné
+                const selectedProducts = $("input[name='productIds']:checked");
+                if (selectedProducts.length === 0) {
+                    isValid = false;
+                    alert("Vous devez sélectionner au moins un produit.");
+                }
+
+                // Vérifier que les quantités sont valides
+                selectedProducts.each(function () {
+                    const quantityInput = $(this).closest("div").find("input[name='quantities']");
+                    const quantity = parseInt(quantityInput.val(), 10);
+                    if (isNaN(quantity) || quantity < 1) {
+                        isValid = false;
+                        alert("Chaque produit sélectionné doit avoir une quantité valide (minimum 1).");
+                        return false; // Arrêter la boucle
+                    }
+                });
+
+                if (!isValid) {
+                    event.preventDefault(); // Empêcher la soumission du formulaire
+                }
+            });
+        });
+    </script>
+}
